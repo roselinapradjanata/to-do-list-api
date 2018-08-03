@@ -23,8 +23,9 @@ class TodoController extends Controller
                     $sortValueAttributes = explode(':', $sortValue);
                     $todos = $todos->orderBy($sortValueAttributes[0], count($sortValueAttributes) > 1 ? $sortValueAttributes[1] : "asc");
                 }
+            } else {
+                $todos = $todos->where($key, $value);
             }
-            else $todos = $todos->where($key, $value);
         }
 
         return response()->json($todos->get(), $this->successStatus);
@@ -33,9 +34,9 @@ class TodoController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
+            'name' => 'required|string|max:500',
             'priority' => 'required|integer|digits_between:0,2',
-            'location' => 'required|string',
+            'location' => 'required|string|max:273',
             'timestart' => 'required|date_format:Y-m-d H:i:s',
             'completed' => 'boolean',
         ]);
@@ -61,9 +62,9 @@ class TodoController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
+            'name' => 'required|string|max:500',
             'priority' => 'required|integer|digits_between:0,2',
-            'location' => 'required|string',
+            'location' => 'required|string|max:273',
             'timestart' => 'required|date_format:Y-m-d H:i:s',
             'completed' => 'boolean',
         ]);
