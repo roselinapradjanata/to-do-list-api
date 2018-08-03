@@ -12,11 +12,22 @@ class TodoController extends Controller
     public $successStatus = 200;
     public $errorStatus = 404;
 
-    public function index()
+    public function index(Request $request)
     {
         $user = User::find(Auth::user()->id);
-        $todos = $user->todos()->get();
-        return response()->json($todos, $this->successStatus);
+        $todos = $user->todos();
+
+        foreach ($request->query() as $key => $value) {
+            if ($key == 'sort') {
+                foreach (explode(',', $value) as $sortValue) {
+                    $sortValueAttributes = explode(':', $sortValue);
+                    $todos = $todos->orderBy($sortValueAttributes[0], count($sortValueAttributes) > 1 ? $sortValueAttributes[1] : "asc");
+                }
+            }
+            else $todos = $todos->where($key, $value);
+        }
+
+        return response()->json($todos->get(), $this->successStatus);
     }
 
     public function store(Request $request)
