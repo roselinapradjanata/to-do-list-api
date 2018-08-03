@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 class TodoController extends Controller
 {
     public $successStatus = 200;
-    public $errorStatus = 401;
+    public $errorStatus = 404;
 
     public function index()
     {
@@ -41,6 +41,9 @@ class TodoController extends Controller
     {
         $user = User::find(Auth::user()->id);
         $todo = $user->todos()->where('id', $id);
+
+        if (!$todo->first()) return response()->json(['error' => 'not found'], $this->errorStatus);
+
         return response()->json($todo->first(), $this->successStatus);
     }
 
@@ -59,7 +62,10 @@ class TodoController extends Controller
 
         $user = User::find(Auth::user()->id);
         $todo = $user->todos()->where('id', $id);
-        $todo->update($request->all());
+
+        if ($todo->first()) $todo->update($request->all());
+        else return response()->json(['error' => 'not found'], $this->errorStatus);
+
         return response()->json($todo->first(), $this->successStatus);
     }
 
@@ -67,7 +73,10 @@ class TodoController extends Controller
     {
         $user = User::find(Auth::user()->id);
         $todo = $user->todos()->where('id', $id);
-        $todo->delete();
+
+        if ($todo->first()) $todo->delete();
+        else return response()->json(['error' => 'not found'], $this->errorStatus);
+
         return response()->json("success", $this->successStatus);
     }
 }
