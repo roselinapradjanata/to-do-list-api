@@ -59,7 +59,7 @@ class TodoController extends Controller
         return response()->json($todo->first(), $this->successStatus);
     }
 
-    public function update(Request $request, $id)
+    public function replace(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:500',
@@ -76,6 +76,16 @@ class TodoController extends Controller
         $todo = $user->todos()->where('id', $id);
 
         if ($todo->first()) $todo->update($request->all());
+        else return response()->json(['error' => 'not found'], $this->errorStatus);
+
+        return response()->json($todo->first(), $this->successStatus);
+    }
+
+    public function update($id) {
+        $user = User::find(Auth::user()->id);
+        $todo = $user->todos()->where('id', $id);
+
+        if ($todo->first()) $todo->update(['completed' => !$todo->first()->completed]);
         else return response()->json(['error' => 'not found'], $this->errorStatus);
 
         return response()->json($todo->first(), $this->successStatus);

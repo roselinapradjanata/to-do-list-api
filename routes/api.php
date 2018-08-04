@@ -16,10 +16,11 @@ use Illuminate\Http\Request;
 Route::post('login', 'UserController@login');
 Route::post('register', 'UserController@register');
 Route::middleware(['auth:api'])->group(function () {
-    Route::post('details', 'UserController@details');
+    Route::get('details', 'UserController@details');
     Route::get('todos', 'TodoController@index');
     Route::get('todos/{id}', 'TodoController@show');
     Route::post('todos', 'TodoController@store');
-    Route::put('todos/{id}', 'TodoController@update');
+    Route::put('todos/{id}', 'TodoController@replace');
+    Route::patch('todos/{id}', 'TodoController@update');
     Route::delete('todos/{id}', 'TodoController@destroy');
 });
