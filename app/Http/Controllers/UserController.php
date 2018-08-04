@@ -16,7 +16,7 @@ class UserController extends Controller
     {
         if (Auth::attempt(['username' => request('username'), 'password' => request('password')])) {
             $user = Auth::user();
-            $success['token'] = $user->createToken('gits-technical-test')->accessToken;
+            $success['token'] = $user->createToken('to-do-list-api')->accessToken;
             return response()->json($success, $this->successStatus);
         } else {
             return response()->json(['error' => 'unauthorised'], $this->errorStatus);
@@ -40,7 +40,7 @@ class UserController extends Controller
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
-        $success['token'] = $user->createToken('gits-technical-test')->accessToken;
+        $success['token'] = $user->createToken('to-do-list-api')->accessToken;
         $success['username'] = $user->username;
         return response()->json($success, $this->successStatus);
     }
